@@ -1,15 +1,12 @@
-require('dotenv').config();
 const { createClient } = require('@supabase/supabase-js');
-const csv = require('csv-parser');
-const fs = require('fs');
-const { uniqBy, groupBy } = require('lodash');
 
-// Supabase API credentials and endpoint
 const supabaseUrl = process.env.API_URL;
 const supabaseApiKey = process.env.ANON_KEY;
 
 // Initialize Supabase client
 const supabase = createClient(supabaseUrl, supabaseApiKey);
+
+// TODO: throw error exceptions
 
 const upsertPlayer = async (playerName) => {
   await supabase
@@ -95,25 +92,9 @@ const loadResult = async (result) => {
     .select();
 };
 
-const results = [];
-fs.createReadStream(`${__dirname}/stats/Public CTM Masters Match Statistics - All Games.csv`)
-  .pipe(csv())
-  .on('data', row => results.push(row))
-  .on('end', async () => {
-    try {
-      const players = uniqBy(results, 'Players');
-      for (const player of players) {
-        await upsertPlayer(player.Players);
-      }
-      const winners = results.filter(player => !!player['Match Winner']);
-      for (const winner of winners) {
-        await upsertEvent(winner.Event.trim(), winner.Year);
-        await upsertMatch(winner.Event.trim(), winner.Year, winner['Match ID'], winner['Match Winner']);
-      }
-      for (const result of results) {
-        await loadResult(result);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  });
+module.exports = {
+  upsertPlayer,
+  upsertEvent,
+  upsertMatch,
+  loadResult,
+};

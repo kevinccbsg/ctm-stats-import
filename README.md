@@ -1,3 +1,9 @@
+## ctm-stats-import
+
+This repository imports CTM CSV stats to a Database structure in supabase.
+
+This is the database schema you need to import.
+
 ```sql
 CREATE TABLE players (
     id SERIAL PRIMARY KEY,
@@ -46,4 +52,28 @@ CREATE TABLE tetris_games (
     game_link TEXT,
     match_pairing VARCHAR(10)
 );
+```
+
+All the stats will be in the stats folder.
+
+## Execute script
+
+You need to include this `.env` file in the source of the project.
+
+```
+API_URL=http://localhost:54321
+GRAPHQL_URL=http://localhost:54321/graphql/v1
+DB_URL=postgresql://postgres:postgres@localhost:54322/postgres
+STUDIO_URL=http://localhost:54323
+INBUCKET_URL=http://localhost:54324
+JWT_SECRET=super-secret-jwt-token-with-at-least-32-characters-long
+ANON_KEY=<ANON_KEY>
+SERVICE_ROLE_KEY=<SERVICE_ROLE_KEY>
+```
+
+Once you include that `.env` file you can execute
+
+```
+npm install
+npm run importData
 ```
