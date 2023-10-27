@@ -15,9 +15,9 @@ CREATE TABLE events (
 
 CREATE TABLE matches (
     id SERIAL PRIMARY KEY,
-    event_id INT REFERENCES events(id),
-    winner_id INT REFERENCES players(id)
-    -- Add more match-related columns as needed
+    event_id INT REFERENCES events(event_id),
+    winner_id INT REFERENCES players(player_id),
+    CONSTRAINT unique_event_winner_combination UNIQUE (event_id, winner_id)
 );
 
 CREATE TABLE tetris_games (
