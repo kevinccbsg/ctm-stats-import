@@ -36,7 +36,7 @@ const upsertMatch = async (eventName, eventYear, matchId, playerWinner) => {
     .eq('name', eventName)
     .eq('year', eventYear);
   if (!eventData) throw new Error(`Could not get eventData ${eventName}`);
-  let matchUpsert = {
+  const matchUpsert = {
     event_id: eventData.id, // Replace with the actual event ID
   };
   const { data: player } = await supabase
@@ -62,32 +62,32 @@ const loadResult = async (result) => {
     .select()
     .single()
     .eq('name', result.Players);
-  const { error } = await supabase
+  await supabase
     .from('tetris_games')
     .upsert({
       match_id: result['Match ID'],
       player_id: player.id,
       game_number: result.Game,
       playstyle: result.Playstyle,
-      game_result: result['Won?'] === 'Yes', 
-      total_lines: parseInt(result['Total Lines']),
-      final_score: parseInt(result['Final Score']),
-      start_19l: parseInt(result['19 L Start']),
-      trans_19: parseInt(result['19 Trans']),
-      post_score_19: parseInt(result['Post Score']),
-      start_29l: parseInt(result['29 L Start']),
-      trans_29: parseInt(result['29 Trans']),
-      lines_29: parseInt(result['29 Lines']),
-      score_29: parseInt(result['29 Score']),
-      no_m_lines: parseInt(result['No M Lines']),
-      no_m_score: parseInt(result['No M Score']),
+      game_result: result['Won?'] === 'Yes',
+      total_lines: parseInt(result['Total Lines'], 10),
+      final_score: parseInt(result['Final Score'], 10),
+      start_19l: parseInt(result['19 L Start'], 10),
+      trans_19: parseInt(result['19 Trans'], 10),
+      post_score_19: parseInt(result['Post Score'], 10),
+      start_29l: parseInt(result['29 L Start'], 10),
+      trans_29: parseInt(result['29 Trans'], 10),
+      lines_29: parseInt(result['29 Lines'], 10),
+      score_29: parseInt(result['29 Score'], 10),
+      no_m_lines: parseInt(result['No M Lines'], 10),
+      no_m_score: parseInt(result['No M Score'], 10),
       topout_type: result['Topout Type'],
       cap: result.Cap,
       sps: result.SPS === 'Yes',
-      level_start: parseInt(result['Lvl Start']),
+      level_start: parseInt(result['Lvl Start'], 10),
       round: result.Round,
       game_link: result['Game Link'],
-      match_pairing: result['Match Pairing']
+      match_pairing: result['Match Pairing'],
     })
     .select();
 };

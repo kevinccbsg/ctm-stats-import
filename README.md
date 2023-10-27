@@ -76,4 +76,7 @@ Once you include that `.env` file you can execute
 ```
 npm install
 npm run importData
+
+// Linter script
+npm run lint
 ```
