@@ -7,7 +7,6 @@ const supabaseApiKey = process.env.ANON_KEY;
 const supabase = createClient(supabaseUrl, supabaseApiKey);
 
 // TODO: throw error exceptions
-
 const upsertPlayer = async (playerName) => {
   await supabase
     .from('players')
