@@ -51,6 +51,7 @@ CREATE TABLE tetris_games (
     round VARCHAR(255),
     game_link TEXT,
     match_pairing VARCHAR(10)
+    CONSTRAINT unique_match_player_combination UNIQUE (match_id, player_id, game_number)
 );
 ```
 

@@ -5,9 +5,7 @@ const {
   loadResult, upsertEvent, upsertMatch, upsertPlayer,
 } = require('./store/supabase');
 
-const DEFAULT_FILE_PATH = `${__dirname}/stats/Public CTM Masters Match Statistics - All Games.csv`;
-
-const main = async (path = DEFAULT_FILE_PATH) => {
+const main = async (path) => {
   logger.info(`Importing file ${path}...`);
   const { players, winners, results } = await importDataFromCSV(path);
   logger.info(`File ${path} imported: ${players.length} players; ${winners.length} winners; ${results.length} records...`);
