@@ -1,4 +1,5 @@
 const { createClient } = require('@supabase/supabase-js');
+const logger = require('../logger');
 
 const supabaseUrl = process.env.API_URL;
 const supabaseApiKey = process.env.ANON_KEY;
@@ -8,7 +9,7 @@ const supabase = createClient(supabaseUrl, supabaseApiKey);
 
 // TODO: throw error exceptions
 const upsertPlayer = async (playerName) => {
-  await supabase
+  const { error } = await supabase
     .from('players')
     .upsert({
       name: playerName,
@@ -16,24 +17,27 @@ const upsertPlayer = async (playerName) => {
       twitch_url: '', // Add the actual URL
       // Add more player-related data as needed
     }, { onConflict: 'name' });
+  if (error) logger.error(error);
 };
 
 const upsertEvent = async (eventName, eventYear) => {
-  await supabase
+  const { error } = await supabase
     .from('events')
     .upsert({
       name: eventName,
       year: eventYear,
     }, { onConflict: 'name' });
+  if (error) logger.error(error);
 };
 
 const upsertMatch = async (eventName, eventYear, matchId, playerWinner) => {
-  const { data: eventData } = await supabase
+  const { data: eventData, error } = await supabase
     .from('events')
     .select()
     .single()
     .eq('name', eventName)
     .eq('year', eventYear);
+  if (error) logger.error(error);
   if (!eventData) throw new Error(`Could not get eventData ${eventName}`);
   const matchUpsert = {
     event_id: eventData.id, // Replace with the actual event ID
@@ -46,22 +50,24 @@ const upsertMatch = async (eventName, eventYear, matchId, playerWinner) => {
   if (!player) throw new Error(`Could not get matchWinner player ${playerWinner}`);
   matchUpsert.winner_id = player.id;
   // Insert data into the matches table
-  await supabase
+  const { error: errorMatches } = await supabase
     .from('matches')
     .upsert({
       id: matchId,
       event_id: eventData.id,
       winner_id: player.id,
     }).select();
+  if (error) logger.error(errorMatches);
 };
 
 const loadResult = async (result) => {
-  const { data: player } = await supabase
+  const { data: player, error } = await supabase
     .from('players')
     .select()
     .single()
     .eq('name', result.Players);
-  await supabase
+  if (error) logger.error(error);
+  const { error: tetrisGameError } = await supabase
     .from('tetris_games')
     .upsert({
       match_id: result['Match ID'],
@@ -89,6 +95,7 @@ const loadResult = async (result) => {
       match_pairing: result['Match Pairing'],
     })
     .select();
+  if (tetrisGameError) logger.error(tetrisGameError);
 };
 
 module.exports = {
