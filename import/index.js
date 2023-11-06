@@ -10,10 +10,21 @@ const importDataFromCSV = (filePath) => new Promise((resolve, reject) => {
     .on('error', (error) => reject(error))
     .on('end', async () => {
       const players = uniqBy(results, 'Players');
-      const winners = results.filter((player) => !!player['Match Winner']);
+      const matches = results.map((row, index) => {
+        const match = {
+          id: row['Match ID'],
+          eventName: row.Event.trim(),
+          eventYear: row.Year,
+        };
+        if (row['Match Winner']) {
+          match.winner = row['Match Winner'];
+          match.losser = row['Match Winner'] !== row.Player ? row['Match Winner'] : results[index - 1].Player;
+        }
+        return match;
+      }).filter((match) => !!match.winner);
       return resolve({
         players,
-        winners,
+        matches,
         results,
       });
     });

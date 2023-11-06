@@ -70,6 +70,7 @@ const loadResult = async (result) => {
   const { error: tetrisGameError } = await supabase
     .from('tetris_games')
     .upsert({
+      id: result['Game ID'],
       match_id: result['Match ID'],
       player_id: player.id,
       game_number: result.Game,
