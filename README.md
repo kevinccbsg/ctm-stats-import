@@ -23,8 +23,7 @@ CREATE TABLE matches (
     id SERIAL PRIMARY KEY,
     event_id INT REFERENCES events(event_id),
     winner_id INT REFERENCES players(player_id),
-    loser_id INT REFERENCES players(player_id),
-    CONSTRAINT unique_event_winner_combination UNIQUE (event_id, winner_id)
+    loser_id INT REFERENCES players(player_id)
 );
 
 CREATE TABLE tetris_games (
@@ -53,6 +52,14 @@ CREATE TABLE tetris_games (
     game_link TEXT,
     match_pairing VARCHAR(10)
 );
+```
+
+```sql
+-- SQL utils
+ALTER TABLE matches
+DROP CONSTRAINT unique_event_winner_combination;
+
+TRUNCATE "tetris_games" RESTART IDENTITY CASCADE;
 ```
 
 All the stats will be in the stats folder.

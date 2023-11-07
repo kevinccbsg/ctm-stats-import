@@ -30,7 +30,18 @@ const upsertEvent = async (eventName, eventYear) => {
   if (error) logger.error(error);
 };
 
-const upsertMatch = async (eventName, eventYear, matchId, playerWinner) => {
+const retrieveUser = async (playerName) => {
+  const { data: player, error } = await supabase
+    .from('players')
+    .select()
+    .single()
+    .eq('name', playerName);
+  if (error) logger.error(error);
+  if (!player) throw new Error(`Could not get matchWinner player ${playerName}`);
+  return player;
+};
+
+const upsertMatch = async (eventName, eventYear, matchId, winnerPlayer, loserPlayer) => {
   const { data: eventData, error } = await supabase
     .from('events')
     .select()
@@ -42,31 +53,26 @@ const upsertMatch = async (eventName, eventYear, matchId, playerWinner) => {
   const matchUpsert = {
     event_id: eventData.id, // Replace with the actual event ID
   };
-  const { data: player } = await supabase
-    .from('players')
-    .select()
-    .single()
-    .eq('name', playerWinner);
-  if (!player) throw new Error(`Could not get matchWinner player ${playerWinner}`);
-  matchUpsert.winner_id = player.id;
+  const winner = await retrieveUser(winnerPlayer);
+  let loser = winner;
+  if (loserPlayer !== winnerPlayer) {
+    loser = await retrieveUser(loserPlayer);
+  }
+  matchUpsert.winner_id = winner.id;
   // Insert data into the matches table
   const { error: errorMatches } = await supabase
     .from('matches')
     .upsert({
       id: matchId,
       event_id: eventData.id,
-      winner_id: player.id,
+      winner_id: winner.id,
+      loser_id: loser.id,
     }).select();
   if (error) logger.error(errorMatches);
 };
 
 const loadResult = async (result) => {
-  const { data: player, error } = await supabase
-    .from('players')
-    .select()
-    .single()
-    .eq('name', result.Players);
-  if (error) logger.error(error);
+  const player = await retrieveUser(result.Players);
   const { error: tetrisGameError } = await supabase
     .from('tetris_games')
     .upsert({

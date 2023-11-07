@@ -16,8 +16,8 @@ const main = async (path) => {
   logger.info('all players imported/updated...');
   for (let index = 0; index < matches.length; index += 1) {
     const match = matches[index];
-    await upsertEvent(match.eventName, match.Year);
-    await upsertMatch(match.eventName, match.Year, match.id, match.winner, match.loser);
+    await upsertEvent(match.eventName, match.eventYear);
+    await upsertMatch(match.eventName, match.eventYear, match.id, match.winner, match.loser);
   }
   logger.info('all events/matches imported/updated...');
   for (let index = 0; index < results.length; index += 1) {

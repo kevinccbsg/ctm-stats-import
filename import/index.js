@@ -18,7 +18,7 @@ const importDataFromCSV = (filePath) => new Promise((resolve, reject) => {
         };
         if (row['Match Winner']) {
           match.winner = row['Match Winner'];
-          match.losser = row['Match Winner'] !== row.Player ? row['Match Winner'] : results[index - 1].Player;
+          match.loser = row['Match Winner'] !== row.Players ? row.Players : results[index - 1].Players;
         }
         return match;
       }).filter((match) => !!match.winner);
