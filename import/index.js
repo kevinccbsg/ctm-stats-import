@@ -22,10 +22,24 @@ const importDataFromCSV = (filePath) => new Promise((resolve, reject) => {
         }
         return match;
       }).filter((match) => !!match.winner);
+      const resultsExtended = results.map((result, index) => {
+        let opponent = null;
+        const nextElementSameGame = results[index + 1] && results[index + 1].Game === result.Game;
+        const nextElementSameMatch = results[index + 1] && results[index + 1]['Match ID'] === result['Match ID'];
+        if (nextElementSameGame && nextElementSameMatch) {
+          opponent = results[index + 1].Players;
+        } else {
+          opponent = results[index - 1].Players;
+        }
+        return {
+          ...result,
+          opponent,
+        };
+      });
       return resolve({
         players,
         matches,
-        results,
+        results: resultsExtended,
       });
     });
 });

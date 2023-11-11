@@ -73,11 +73,13 @@ const upsertMatch = async (eventName, eventYear, matchId, winnerPlayer, loserPla
 
 const loadResult = async (result) => {
   const player = await retrieveUser(result.Players);
+  const opponent = await retrieveUser(result.opponent);
   const { error: tetrisGameError } = await supabase
     .from('tetris_games')
     .upsert({
       id: result['Game ID'],
       match_id: result['Match ID'],
+      opponent_id: opponent.id,
       player_id: player.id,
       game_number: result.Game,
       playstyle: result.Playstyle,
