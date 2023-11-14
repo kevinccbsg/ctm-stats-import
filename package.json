@@ -4,7 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "importData": "node execute.js",
+    "importData": "USER=true MATCHES=true RESULTS=true node execute.js",
+    "importData:USER": "USER=true node execute.js",
+    "importData:MATCHES": "MATCHES=true node execute.js",
+    "importData:RESULTS": "RESULTS=true node execute.js",
     "lint": "eslint .",
     "test": "jest"
   },
