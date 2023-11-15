@@ -8,6 +8,17 @@ const supabaseApiKey = process.env.ANON_KEY;
 const supabase = createClient(supabaseUrl, supabaseApiKey);
 
 // TODO: throw error exceptions
+const uploadPlayerImage = async (playerName, playerImage) => {
+  const { error } = await supabase
+    .from('players')
+    .update({
+      profile_picture_url: playerImage,
+    })
+    .eq('name', playerName);
+  if (error) logger.error(error);
+};
+
+// TODO: throw error exceptions
 const upsertPlayer = async (playerName) => {
   const { error } = await supabase
     .from('players')
@@ -112,4 +123,5 @@ module.exports = {
   upsertEvent,
   upsertMatch,
   loadResult,
+  uploadPlayerImage,
 };

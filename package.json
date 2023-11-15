@@ -8,6 +8,7 @@
     "importData:USER": "USER=true node execute.js",
     "importData:MATCHES": "MATCHES=true node execute.js",
     "importData:RESULTS": "RESULTS=true node execute.js",
+    "importData:USER_IMAGES": "RESULTS=true node playerImages.js",
     "lint": "eslint .",
     "test": "jest"
   },
